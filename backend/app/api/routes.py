@@ -46,6 +46,32 @@ async def predicciones_hoy(db: AsyncSession = Depends(get_db)):
     return {"date": today.isoformat(), "picks": picks}
 
 
+@router.get("/partidos")
+async def partidos_por_fecha(
+    fecha: Optional[str] = Query(None),
+    db: AsyncSession = Depends(get_db),
+):
+    game_date = date.fromisoformat(fecha) if fecha else date.today()
+    stmt = select(Game).where(Game.game_date == game_date).order_by(Game.home_team)
+    result = await db.execute(stmt)
+    games = result.scalars().all()
+    return {
+        "date": game_date.isoformat(),
+        "games": [
+            {
+                "id": g.id,
+                "home_team": g.home_team,
+                "away_team": g.away_team,
+                "game_date": g.game_date.isoformat(),
+                "status": g.status,
+                "home_score": g.home_score,
+                "away_score": g.away_score,
+            }
+            for g in games
+        ],
+    }
+
+
 @router.get("/partido/{game_id}")
 async def detalle_partido(game_id: int, db: AsyncSession = Depends(get_db)):
     game = await db.get(Game, game_id)

@@ -48,14 +48,31 @@ export interface HistorySummary {
   accuracy: number;
 }
 
+export interface GameSummary {
+  id: number;
+  home_team: string;
+  away_team: string;
+  game_date: string;
+  status: string;
+  home_score: number | null;
+  away_score: number | null;
+}
+
 export const api = {
   health: () => fetchJSON<{ status: string; timestamp: string }>("/health"),
+
   picksOfDay: () => fetchJSON<{ date: string; picks: Pick[] }>("/predicciones/hoy"),
+
   gameDetail: (id: number) => fetchJSON<GameDetail>(`/partido/${id}`),
+
+  gamesForDate: (date: string) =>
+    fetchJSON<{ date: string; games: GameSummary[] }>(`/partidos?fecha=${date}`),
+
   history: (tipo?: string) => {
     const qs = tipo ? `?tipo=${tipo}` : "";
     return fetchJSON<HistorySummary>(`/historial${qs}`);
   },
+
   historyByType: (tipo: string) =>
     fetchJSON<HistorySummary & { prop_type: string }>(`/historial/${tipo}`),
 };
