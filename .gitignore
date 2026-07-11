@@ -39,3 +39,7 @@ web-build/
 
 # Docker
 pgdata/
+
+app/expo-tunnel.log
+package-lock.json
+*.log
