@@ -1,0 +1,41 @@
+[project]
+name = "mlb-predictor-backend"
+version = "0.1.0"
+description = "MLB Predictor App - Backend API"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi[standard]>=0.115",
+    "sqlalchemy[asyncio]>=2.0",
+    "asyncpg>=0.30",
+    "alembic>=1.14",
+    "pandas>=2.2",
+    "numpy>=2.0",
+    "httpx>=0.28",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "python-dotenv>=1.0",
+    "apscheduler>=3.10",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "black>=24.0",
+    "ruff>=0.6",
+    "ipython>=8.0",
+    "jupyter>=1.0",
+]
+ml = [
+    "scikit-learn>=1.5",
+    "xgboost>=2.0",
+    "lightgbm>=4.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
