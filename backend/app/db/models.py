@@ -12,6 +12,8 @@ from sqlalchemy import (
     Numeric,
     String,
     Text,
+    JSON,
+    UniqueConstraint,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -171,3 +173,21 @@ class Result(Base):
     recorded_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     prediction: Mapped["Prediction"] = relationship(backref="result")
+
+
+class ModelVersion(Base):
+    __tablename__ = "model_versions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    version_label: Mapped[str] = mapped_column(String(20), nullable=False)
+    market: Mapped[str] = mapped_column(String(20), nullable=False)
+    training_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    training_samples: Mapped[int] = mapped_column(Integer, nullable=False)
+    metrics: Mapped[dict] = mapped_column(JSON, nullable=False)
+    feature_importance: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
+    parent_version: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    __table_args__ = (
+        UniqueConstraint("version_label", "market", name="uq_version_market"),
+    )

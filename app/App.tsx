@@ -7,6 +7,7 @@ import { Text, View } from "react-native";
 import DashboardScreen from "./src/screens/DashboardScreen";
 import CalendarScreen from "./src/screens/CalendarScreen";
 import HistoryScreen from "./src/screens/HistoryScreen";
+import ProximosScreen from "./src/screens/ProximosScreen";
 import PickDetailScreen from "./src/screens/PickDetailScreen";
 import { colors } from "./src/theme";
 
@@ -18,6 +19,7 @@ export type RootStackParamList = {
 
 export type TabParamList = {
   DashboardTab: undefined;
+  ProximosTab: undefined;
   CalendarTab: undefined;
   HistoryTab: undefined;
 };
@@ -28,6 +30,7 @@ const Tab = createBottomTabNavigator<TabParamList>();
 function TabIcon({ label }: { label: string }) {
   const icons: Record<string, string> = {
     "Hoy": "📊",
+    "Próximos": "📋",
     "Partidos": "📅",
     "Historial": "📈",
   };
@@ -58,6 +61,7 @@ function TabNavigator() {
         tabBarIcon: () => {
           const labels: Record<string, string> = {
             DashboardTab: "Hoy",
+            ProximosTab: "Próximos",
             CalendarTab: "Partidos",
             HistoryTab: "Historial",
           };
@@ -69,6 +73,11 @@ function TabNavigator() {
         name="DashboardTab"
         component={DashboardScreen}
         options={{ title: "Picks de Hoy", tabBarLabel: "Hoy" }}
+      />
+      <Tab.Screen
+        name="ProximosTab"
+        component={ProximosScreen}
+        options={{ title: "Próximos Partidos", tabBarLabel: "Próximos" }}
       />
       <Tab.Screen
         name="CalendarTab"

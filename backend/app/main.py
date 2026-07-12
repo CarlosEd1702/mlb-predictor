@@ -16,7 +16,7 @@ async def lifespan(app: FastAPI):
     else:
         print("WARNING: No ODDS_API_KEY set. Odds data will be unavailable.")
     setup_scheduler()
-    print("Scheduler started (jobs: lineups@6am, odds@7am, models@8am, results@10pm)")
+    print("Scheduler started (jobs: lineups@6am, odds@7am, models@8am, results@10pm, retrain@10:30pm)")
     yield
     print("Shutting down MLB Predictor API")
 

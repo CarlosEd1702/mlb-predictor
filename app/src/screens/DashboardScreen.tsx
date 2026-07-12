@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { api, Pick } from "../api/client";
+import { TEAM_ABBR } from "../constants";
 import { colors, fonts, spacing } from "../theme";
 
 type Props = NativeStackNavigationProp<Record<string, any>>;
@@ -75,7 +76,12 @@ export default function DashboardScreen() {
             tintColor={colors.blue}
           />
         }
-        renderItem={({ item }) => (
+        renderItem={({ item }) => {
+          const selTeam = item.selection?.replace(/\s*win$/, "").trim();
+          const selAbbr = selTeam ? TEAM_ABBR[selTeam] : null;
+          const isHomePick = selAbbr === item.home_team;
+          const isAwayPick = !isHomePick && selAbbr === item.away_team;
+          return (
           <TouchableOpacity
             style={styles.card}
             activeOpacity={0.7}
@@ -83,9 +89,20 @@ export default function DashboardScreen() {
           >
             <View style={styles.cardTop}>
               <View style={styles.teams}>
-                <Text style={styles.awayTeam}>{item.away_team}</Text>
+                <View style={styles.teamRow}>
+                  {isAwayPick && <Text style={styles.pickIcon}>✓</Text>}
+                  <Text style={isAwayPick ? styles.teamPicked : styles.teamNotPicked}>
+                    {item.away_team}
+                  </Text>
+                </View>
                 <Text style={styles.atSymbol}>@</Text>
-                <Text style={styles.homeTeam}>{item.home_team}</Text>
+                <View style={styles.teamRow}>
+                  {isHomePick && <Text style={styles.pickIcon}>✓</Text>}
+                  <Text style={isHomePick ? styles.teamPicked : styles.teamNotPicked}>
+                    {item.home_team}
+                  </Text>
+                  <Text style={styles.homeIndicator}>(L)</Text>
+                </View>
               </View>
               <EdgeBadge edge={item.edge} />
             </View>
@@ -109,7 +126,8 @@ export default function DashboardScreen() {
               )}
             </View>
           </TouchableOpacity>
-        )}
+          );
+        }}
         ListEmptyComponent={
           <View style={styles.emptyBox}>
             <Text style={styles.emptyTitle}>Sin picks hoy</Text>
@@ -137,9 +155,12 @@ const styles = StyleSheet.create({
   },
   cardTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 10 },
   teams: { flexDirection: "row", alignItems: "center", gap: 6 },
-  awayTeam: { fontSize: 15, fontWeight: "600", color: colors.textDim },
+  teamRow: { flexDirection: "row", alignItems: "center", gap: 3 },
+  teamPicked: { fontSize: 15, fontWeight: "700", color: colors.text },
+  teamNotPicked: { fontSize: 15, fontWeight: "500", color: colors.textDim },
+  pickIcon: { fontSize: 14, color: colors.green, fontWeight: "700" },
+  homeIndicator: { fontSize: 10, color: colors.textMuted, marginLeft: 2 },
   atSymbol: { fontSize: 12, color: colors.textMuted },
-  homeTeam: { fontSize: 15, fontWeight: "700", color: colors.text },
   edgeBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
   edgeText: { fontSize: 13, fontWeight: "700" },
   cardBody: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 10 },
